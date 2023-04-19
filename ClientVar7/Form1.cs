@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ServerToClient
+namespace ClientVar7
 {
     public partial class Form1 : Form
     {
@@ -23,7 +23,7 @@ namespace ServerToClient
 
             try
             {
-                IPHostEntry ipHost = Dns.Resolve("26.81.20.164");
+                IPHostEntry ipHost = Dns.Resolve("10.168.204.58");
                 IPAddress ipAddr = ipHost.AddressList[0];
                 IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 8080);
                 s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -37,20 +37,29 @@ namespace ServerToClient
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            string textBox1Name = textBox1.Text;
-            string textBox3Type = textBox3.Text;
+            string textBox1par = textBox1.Text;
+            string textBox2par = textBox2.Text;
+            string textBox3par = textBox3.Text;
             // Отправка сообщения
-            byte[] msg1 = Encoding.UTF8.GetBytes("name:" + textBox1Name + 
-                                                 ";date:"+ dateTimePicker1.Value.ToString("dd.MM.yyyy") + 
-                                                 ";type:" + textBox3Type);
+            byte[] msg1 = Encoding.UTF8.GetBytes("param1:" + textBox1par + 
+                                                 ";param2:"+ textBox2par + 
+                                                 ";param3:" + textBox3par);
             s.Send(msg1);
             // Получение ответа от сервера
-            int bytesRec = s.Receive(bytes);
-            string data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
-            MessageBox.Show(data);
-            
+            try
+            {
+                int bytesRec = s.Receive(bytes);
+                string data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+                // Console.WriteLine(data);
+                MessageBox.Show(data);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         }
     }
 }

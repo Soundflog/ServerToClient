@@ -14,7 +14,7 @@ class Program
     {
         
         
-        IPHostEntry ipHost = Dns.Resolve("localhost");
+        IPHostEntry ipHost = Dns.Resolve("DESKTOP-P3RTGCT");
         IPAddress ipAddr = ipHost.AddressList[0];
         IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 8086);
         Socket sListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
