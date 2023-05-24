@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -21,7 +22,7 @@ namespace ClientVar7
         {
             InitializeComponent();
 
-            try
+            /*try
             {
                 IPHostEntry ipHost = Dns.Resolve("10.168.204.58");
                 IPAddress ipAddr = ipHost.AddressList[0];
@@ -34,11 +35,19 @@ namespace ClientVar7
             {
                 Console.WriteLine(e);
                 throw;
-            }
+            }*/
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            var client = new System.Net.Sockets.TcpClient();
+            // IPAddress.Parse("26.159.100.61")
+            client.Connect(IPAddress.Parse("26.125.30.60"), 8080);
+            Console.WriteLine(@"Connected to server ...");
+            
+            NetworkStream networkStream = client.GetStream();
+            
+            
             string textBox1par = textBox1.Text;
             string textBox2par = textBox2.Text;
             string textBox3par = textBox3.Text;
@@ -46,8 +55,30 @@ namespace ClientVar7
             byte[] msg1 = Encoding.UTF8.GetBytes("param1:" + textBox1par + 
                                                  ";param2:"+ textBox2par + 
                                                  ";param3:" + textBox3par);
-            s.Send(msg1);
-            // Получение ответа от сервера
+            
+            var msg = $"param1:{textBox1par};param2:{textBox2par};param3:{textBox3par}";
+            // s.Send(msg1);
+            string path = "message.txt";
+            using (var sw = new StreamWriter(path))
+            {
+                sw.Write(msg);
+            }
+
+            Console.WriteLine(@"File Creating");
+            
+            var fileBytes = File.ReadAllBytes(path);
+            networkStream.Write(fileBytes, 0, fileBytes.Length);
+            Console.WriteLine(@"File send");
+            
+            // Received response from server
+            var buffer = new byte[1024];
+            var bytesRead = networkStream.Read(buffer, 0, buffer.Length);
+            var responseFromServer = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            Console.WriteLine($@"Response From Server: {responseFromServer}");
+            MessageBox.Show(responseFromServer);
+            networkStream.Close();
+            client.Close();
+            /*// Получение ответа от сервера
             try
             {
                 int bytesRec = s.Receive(bytes);
@@ -59,7 +90,7 @@ namespace ClientVar7
             {
                 Console.WriteLine(exception);
                 throw;
-            }
+            }*/
         }
     }
 }

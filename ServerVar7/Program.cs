@@ -2,13 +2,14 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-class Program
+namespace ServerVar7
 {
-    // Пропиши в переменные типы товаров и их срок хранения в DateTime
+    internal class Program
+    {
+        // Пропиши в переменные типы товаров и их срок хранения в DateTime
     public static string[] type = new string[3] { "Молоко", "Хлеб", "Мясо" };
     public static int[] time = new int[3] { 10, 5, 3 };
 
@@ -19,6 +20,7 @@ class Program
         
         try
         {
+            // IPAddress.Parse("26.125.30.60")
             TcpListener server = new TcpListener(IPAddress.Parse("26.125.30.60"), 8080);
             server.Start();
             Console.WriteLine("Server starting ...");
@@ -74,9 +76,9 @@ class Program
         result[0] = temp[0].Split(':')[1];
         result[1] = temp[1].Split(':')[1];
         result[2] = temp[2].Split(':')[1];
-        Console.WriteLine("Имя: {0}", result[0]);
-        Console.WriteLine("Дата: {0}", result[1]);
-        Console.WriteLine("Тип: {0}", result[2]);
+        Console.WriteLine("Параметр 1: {0}", result[0]);
+        Console.WriteLine("Параметр 2: {0}", result[1]);
+        Console.WriteLine("Параметр 3: {0}", result[2]);
         return result;
     }
     
@@ -85,6 +87,15 @@ class Program
         try
         {
             string[] dataResult = Parser(data);
+            int sum = 0;
+            byte[] message;
+            int param1 = Convert.ToInt32(dataResult[0]);
+            int param2 = Convert.ToInt32(dataResult[1]);
+            int param3 = Convert.ToInt32(dataResult[2]);
+            sum = param1 + param2 + param3;
+            message = Encoding.UTF8.GetBytes(sum.ToString());
+            
+            /*
             // Проверка на срок хранения
             DateTime date = DateTime.Parse(dataResult[1]);
             DateTime now = DateTime.Now;
@@ -115,14 +126,15 @@ class Program
             {
                 Console.WriteLine("Срок хранения не истек");
                 msg = Encoding.UTF8.GetBytes("Срок хранения не истек");
-            }
+            }*/
 
-            return msg;
+            return message;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             return Encoding.UTF8.GetBytes("Ошибка");
         }
+    }
     }
 }
