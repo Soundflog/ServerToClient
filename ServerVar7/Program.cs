@@ -9,11 +9,6 @@ namespace ServerVar7
 {
     internal class Program
     {
-        // Пропиши в переменные типы товаров и их срок хранения в DateTime
-    public static string[] type = new string[3] { "Молоко", "Хлеб", "Мясо" };
-    public static int[] time = new int[3] { 10, 5, 3 };
-
-    
     
     static void Main(string[] args)
     {
